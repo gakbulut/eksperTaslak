@@ -1,0 +1,1114 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  /* font-size: 16px; */
+  line-height: 1.5;
+  color: #333;
+  /* background-color: #f9f9f9;  */
+  /* min-height: 70vh; */
+  position: relative;
+  overflow-y: hidden;
+}
+
+.containerMain {
+  /* display: flex; */
+  height: 100vh;
+}
+
+#headerDiv {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logout-button {
+  /* display: inline-block; */
+  margin: 0 5px 0 0;
+  padding: 5px 30px;
+  background-color: #B21807;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+
+.logout-button:hover {
+  background: #901306;
+}
+
+.column_left {
+
+  float: left;
+  background-color: #FFFFFF;
+  width: 35%;
+  padding: 6px;
+  /* height: 625px; */
+  height: 82vh;
+}
+
+.column_right {
+
+  float: right;
+  border: 1px;
+  background-color: #FFFFFF;
+  width: 65%;
+  padding: 6px;
+  /* height: 671px; */
+  height: 88.5vh;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  width: 100%;
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/************************************** 1 - LEFT COLUMN **********************************/
+
+/* .right-align {
+  display: flex;
+  justify-content: flex-end;
+} */
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #C9D4EA;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  width: 25%;
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #E3E9F4;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #C9D4EA;
+}
+
+/* Style the tab content */
+/* .tabcontent {
+display: none;
+padding: 3px 3px;
+border: 1px solid #C9D4EA;
+border-top: none;
+position: relative;
+overflow-y: scroll;
+height: 100%;
+} */
+
+.tabcontent_left {
+  display: inline;
+  padding: 3px 3px;
+  border: 1px solid #C9D4EA;
+  border-top: none;
+  position: relative;
+  overflow-y: scroll;
+  height: 100%
+}
+
+.tabcontent_right {
+  display: inline;
+  padding: 3px 3px;
+  border: 1px solid #C9D4EA;
+  border-top: none;
+  position: relative;
+  overflow-y: scroll;
+  height: 100%;
+}
+
+
+/*************** 1.1 - LEFT COLUMN / GENEL*******************/
+.container_left {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 6px;
+}
+
+input[type=text] {
+  width: 100%;
+  padding: 12px 10px;
+  margin: 4px 0;
+  /* margin-bottom: 6px; */
+  display: block;
+  border: 1px solid #C9D4EA;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+select {
+  width: 100%;
+  padding: 10px 10px 12px 10px;
+  margin: 4px 0;
+  /* margin-bottom: 6px; */
+  display: block;
+  border: 1px solid #C9D4EA;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+/* Style the submit button */
+input[type=button] {
+  width: 100%;
+  background-color: #04AA6D;
+  color: white;
+  padding: 12px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Add a background color to the submit button on mouse-over */
+input[type=button]:hover {
+  background-color: #45a049;
+}
+
+/* Style the label to display next to the inputs */
+label {
+  padding: 18px 12px 12px 8px;
+  display: inline-block;
+  font-size: 15px;
+}
+
+/* Floating column for labels: 1-2-3-4-5-10-15-20-25-30-5-40-50-60-65-70-75% width */
+
+.col-1 {
+  float: left;
+  width: 1%;
+  margin-top: 0px;
+}
+
+.col-2 {
+  float: left;
+  width: 2%;
+  margin-top: 0px;
+}
+
+.col-2x {
+  float: left;
+  width: 2.5%;
+  margin-top: 0px;
+}
+
+.col-3 {
+  float: left;
+  width: 3%;
+  margin-top: 0px;
+}
+
+.col-4 {
+  float: left;
+  width: 4%;
+  margin-top: 0px;
+}
+
+.col-5 {
+  float: left;
+  width: 5%;
+  margin-top: 0px;
+}
+
+.col-6 {
+  float: left;
+  width: 6%;
+  margin-top: 4px;
+}
+
+.col-6_uzun {
+  padding: 0;
+  margin-left: 2px;
+}
+
+.col-7 {
+  float: left;
+  width: 7%;
+  margin-top: 0px;
+}
+
+.col-8 {
+  float: left;
+  width: 8%;
+  margin-top: 0px;
+}
+
+.col-10x {
+  float: left;
+  width: 10%;
+  margin-top: 0px;
+  cursor: default;
+}
+
+.col-10 {
+  float: left;
+  width: 10%;
+  margin-top: 4px;
+}
+
+.col-10_uzun {
+  padding: 27px 0;
+}
+
+.col-13 {
+  float: left;
+  width: 12.5%;
+  margin-top: 0px;
+}
+
+.col-15 {
+  float: left;
+  width: 15%;
+  margin-top: 0px;
+}
+
+.col-17 {
+  float: left;
+  width: 17.5%;
+  margin-top: 0px;
+}
+
+.col-19 {
+  float: left;
+  width: 19%;
+  margin-top: 0px;
+}
+
+.col-20 {
+  float: left;
+  width: 20%;
+  margin-top: 0px;
+}
+
+.col-22 {
+  float: left;
+  width: 22.5%;
+  margin-left: 0px;
+}
+
+.col-25 {
+  float: left;
+  width: 25%;
+  margin-top: 0px;
+}
+
+.col-27 {
+  float: left;
+  width: 27.5%;
+  margin-left: 0px;
+}
+
+
+.col-30 {
+  float: left;
+  width: 30%;
+  margin-top: 0px;
+}
+
+.col-32 {
+  float: left;
+  width: 32.5%;
+  margin-top: 0px;
+}
+
+.col-35 {
+  float: left;
+  width: 35%;
+  margin-top: 0px;
+}
+
+.col-37 {
+  float: left;
+  width: 37.5%;
+  margin-top: 0px;
+}
+
+.col-39 {
+  float: left;
+  width: 39%;
+  margin-top: 0px;
+}
+
+.col-40 {
+  float: left;
+  width: 40%;
+  margin-top: 0px;
+}
+
+.col-45 {
+  float: left;
+  width: 45%;
+  margin-top: 0px;
+}
+
+.col-47 {
+  float: left;
+  width: 47.5%;
+  margin-top: 0px;
+}
+
+.col-50 {
+  float: left;
+  width: 50%;
+  margin-top: 0px;
+}
+
+.col-52 {
+  float: left;
+  width: 52.5%;
+  margin-top: 0px;
+}
+
+.col-55 {
+  float: left;
+  width: 55%;
+  margin-top: 0px;
+}
+
+.col-60 {
+  float: left;
+  width: 60%;
+  margin-top: 0px;
+}
+
+.col-62 {
+  float: left;
+  width: 62.5%;
+  margin-top: 0px;
+}
+
+.col-63 {
+  float: left;
+  width: 63%;
+  margin-top: 0px;
+}
+
+.col-65 {
+  float: left;
+  width: 65%;
+}
+
+.col-70 {
+  float: left;
+  width: 70%;
+  margin-top: 0px;
+}
+
+.col-72 {
+  float: left;
+  width: 72.5%;
+  margin-top: 0px;
+}
+
+.col-75 {
+  float: left;
+  width: 75%;
+}
+
+.col-77 {
+  float: left;
+  width: 77%;
+}
+
+.col-80 {
+  float: left;
+  width: 80%;
+}
+
+.col-85 {
+  float: left;
+  width: 85%;
+}
+
+.col-90 {
+  float: left;
+  width: 90%;
+}
+
+.col-93 {
+  float: left;
+  width: 93%;
+}
+
+.col-100 {
+  float: left;
+  width: 100%;
+}
+
+/*************** 1.2 - LEFT COLUMN / checked_container*******************/
+
+.fontSize12 {
+  font-size: 12px;
+}
+
+.fontSize13 {
+  font-size: 13px;
+  padding-top: 12px;
+  margin-top: 3px;
+}
+
+.blockk {
+  display: block;
+}
+
+/* The container */
+
+.container_checked {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 35px;
+  padding-top: 6px;
+  /* margin-top: 12px; */
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.container_checked_manuel {
+  display: flex;
+  /* position: relative;*/
+  /* width:25px;  */
+  height: 50px;
+  margin: 0 0 0 0;
+  padding: 0 40px 12px 0;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.container_checked2 {
+  margin-top: 0px;
+  padding-top: 6px;
+  /* border: 1px solid #C9D4EA; */
+}
+
+.container_checked3 {
+  font-size: 15px;
+}
+
+/* Hide the browser's default checkbox */
+.container_checked input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #E3E9F4;
+  /* #eee */
+}
+
+
+/* On mouse-over, add a grey background color */
+.container_checked:hover input~.checkmark {
+  background-color: #C9D4EA;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container_checked input:checked~.checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container_checked input:checked~.checkmark:after {
+  display: inline-block;
+}
+
+
+/* Style the checkmark/indicator */
+.container_checked .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.container_checked select {
+  padding: 0px 0px;
+  margin: 0 0 0px 6px;
+  width: 30%;
+}
+
+
+/*********************** 1.3 - ICON ***************************/
+
+.material-symbols-outlined {
+  width: 100%;
+  padding: 6px 0;
+  display: block;
+  color: black;
+  border-radius: 4px;
+  cursor: pointer;
+  /* margin-top: 6px; */
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24
+}
+
+.disabled {
+  color: grey;
+  /* Pasif görünüm */
+  pointer-events: none;
+  /* Tıklanamaz hale getirir */
+  cursor: not-allowed;
+  /* İzin verilmedi göstergesi */
+}
+
+/*********************** 1.4 - DROPMENU-CHECKED ***************************/
+
+.bbpkSpan {
+  display: none;
+}
+
+.menu_border {
+  /* border: 1px dashed #5e5c5c; */
+  /* margin-bottom: 12px; */
+  background-color: #f1f1f1;
+  border-bottom: 2px solid violet;
+}
+
+.floatleft {
+  float: left;
+  width: 24px;
+  margin-left: 2px;
+}
+
+/* .small-input {
+  width: 50px;  
+  margin-left: 2px;  /
+} */
+
+
+.label_button {
+  background-color: #E5E5E5;
+  float: left;
+  border-radius: 4px;
+  border: 1px solid #C9D4EA;
+  outline: none;
+  cursor: pointer;
+  /* padding: 14px 16px 12px 16px; */
+  transition: 0.3s;
+  font-size: 12px;
+  text-align: center;
+  padding-top: 12px;
+  margin-top: 4px;
+  width: 70px;
+  height: 39px;
+}
+
+.label_button:hover {
+  background-color: #C9D4EA;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin: 1px 0 0 2px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 200px;
+  max-height: 300px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  bottom: 100%;
+  left: 100;
+  overflow-y: scroll;
+}
+
+.dropdown-contenttt {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 400px;
+  max-height: 360px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  bottom: 100%;
+  left: -200px;
+  overflow-y: scroll;
+}
+
+.dropdown-content label {
+  display: block;
+  padding: 8px 8px;
+  cursor: pointer;
+}
+
+.dropdown-content label:hover {
+  background-color: #f1f1f1;
+}
+
+/* .show {
+  display: block;
+} */
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* .dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+} */
+
+/* ******************** */
+.dropbtnn {
+  background-color: #E5E5E5;
+  float: left;
+  border-radius: 4px;
+  border: 1px solid #C9D4EA;
+  outline: none;
+  cursor: pointer;
+  /* padding: 14px 16px 12px 16px; */
+  transition: 0.3s;
+  font-size: 12px;
+  text-align: center;
+  padding-top: 12px;
+  margin-top: 4px;
+  width: 70px;
+  height: 39px;
+}
+
+.dropbtnn:hover,
+.dropbtnn:focus {
+  background-color: #C9D4EA;
+}
+
+.dropdownn {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-contentt {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown-contentt label {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+
+.dropdownn label:hover {
+  background-color: #E3E9F4;
+}
+
+/* .myDropdownn {
+  display: none;
+} */
+
+.dropdown-contentt.show {
+  display: block;
+}
+
+
+#meskenElement {
+  display: block;
+}
+
+#digerElement {
+  display: none;
+}
+
+#linkButton {
+  display: inline-block;
+  padding: 10px;
+  margin: 10px 10px;
+  background-color: lightblue;
+  cursor: pointer;
+  text-decoration: none;
+  /* Alt çizgiyi kaldırır */
+  color: black;
+  font-size: 14px;
+}
+
+#linkButton:hover {
+  background-color: rgb(96, 194, 224);
+}
+
+
+
+/************************************** 2 - RIGHT COLUMN **********************************/
+/* Style the buttons that are used to open and close the accordion panel */
+.accordion {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  transition: 0.4s;
+  font-size: 14px;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when 
+you move the mouse over it (hover) */
+.active,
+.accordion:hover {
+  background-color: #C9D4EA;
+}
+
+/* Style the accordion panel. Note: hidden by default */
+.panel {
+  padding: 0 8px;
+  background-color: white;
+  display: none;
+  overflow: hidden;
+}
+
+/* .panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+.active + .panel {
+  max-height: 200px;
+}  */
+
+.panel_taslakmetin {
+  padding: 0 18px;
+  background-color: white;
+  /* display: none; */
+  overflow: hidden;
+}
+
+/*************** 2.1 - RIGHT COLUMN / *******************/
+span {
+  color: blue;
+}
+
+/* .baslik {
+  font-weight: bold;
+} */
+
+.paragraf {
+  text-align: justify;
+}
+
+.colorrr {
+  color: red;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* ****************************************** */
+
+
+.date-picker {
+  background-color: #fff;
+  padding: 4px;
+  border-radius: 10px;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.date-picker input[type="date"] {
+  font-size: 15px;
+  padding: 5px;
+}
+
+.pdf_input {
+  padding: 10px 8px 8px 8px;
+  margin-top: 4px;
+  width: 216px;
+  height: 37px
+}
+
+.styled-textarea {
+  width: 100%;
+  /* Full width of the container */
+  min-height: 200px;
+  /* Minimum height to ensure visibility */
+  font-size: 15px;
+  /* Font size for text */
+  padding: 10px;
+  /* Inner spacing */
+  border: 1px solid #ccc;
+  /* Light gray border */
+  border-radius: 5px;
+  /* Rounded corners */
+  overflow: hidden;
+  /* Hides any overflowing content */
+  resize: none;
+  /* Prevents resizing by the user */
+  text-align: justify;
+  /* Justifies the text alignment */
+}
+
+.styled-textarea2 {
+  width: 100%;
+  /* Full width of the container */
+  height: 40px;
+  font-size: 14px;
+  /* Font size for text */
+  padding: 10px;
+  /* Inner spacing */
+  border: 1px solid #ccc;
+  /* Light gray border */
+  border-radius: 5px;
+  /* Rounded corners */
+  overflow: hidden;
+  /* Hides any overflowing content */
+  resize: none;
+  /* Prevents resizing by the user */
+  text-align: justify;
+  /* Justifies the text alignment */
+}
+
+;
+
+.styled-textarea3 {
+  width: 100%;
+  /* Full width of the container */
+  height: 100px;
+  font-size: 14px;
+  /* Font size for text */
+  padding: 10px;
+  /* Inner spacing */
+  border: 1px solid #ccc;
+  /* Light gray border */
+  border-radius: 5px;
+  /* Rounded corners */
+  overflow: hidden;
+  /* Hides any overflowing content */
+  resize: none;
+  /* Prevents resizing by the user */
+  text-align: justify;
+  /* Justifies the text alignment */
+}
+
+;
+
+
+/* .tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  text-align: center;
+  display: none;
+  z-index: 1000;
+  width: 100%;
+} */
+
+
+/* Styling for blurring the background */
+body.blurred {
+  overflow: visible;
+  /* overflow'u geçici olarak görünür yap */
+  filter: blur(5px);
+  /* Adjust blur intensity as needed */
+  transition: filter 0.3s ease;
+  /* Smooth transition */
+  pointer-events: none;
+  /* Arka planla etkileşimi engeller */
+}
+
+/* Basic styling for the popup */
+.popup-window {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 95%;
+  height: 95%;
+  overflow-y: auto;
+  /* Make the popup 80% of the viewport width */
+  /* max-width: 900px; */
+  /* Optional: Set a maximum width */
+  background-color: rgba(224, 214, 214, 1);
+  padding: 30px;
+  /* Increase padding for a spacious feel */
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  /* position: relative;  Required for positioning the close button */
+  pointer-events: auto;
+  /* Popup penceresiyle etkileşimlere izin ver */
+}
+
+.popup-content {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.close-btn {
+  position: fixed;
+  /* bottom: 15px;
+  right: 15px; */
+  top: 10px;
+  right: 10px;
+  padding: 10px 20px;
+  background-color: #04AA6D;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.close-btn:hover {
+  background-color: #45a049;
+}
+
+table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.form-container2 {
+  display: inline-flex;
+  /* Flexbox düzeni */
+  justify-content: space-between;
+  /* Eşit aralık bırak */
+  padding: 0 25%;
+  /* Sağdan ve soldan %20 boşluk bırak */
+}
+
+.form-container2 label {
+  display: inline-flexbox;
+  text-align: center;
+  margin-bottom: 0px;
+}
+
+.form-container2 input[type="text"],
+.form-container2 input[type="button"] {
+  /* Giriş ve buton input'ları %100 genişlikte */
+  padding: 10px;
+  /* Daha küçük padding */
+  box-sizing: border-box;
+  font-size: 14px;
+  /* Küçük font */
+  text-align: center;
+}
+
+.form-container2 input[type="button"] {
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+.textContainerZiraat .textContainerVakif {
+  position: relative;
+  max-width: auto;
+  background-color: #f5f5f5;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+/* button#copy-button {
+  position: absolute;
+  width: 50px;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  background-color: #04AA6D;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+button#copy-button:hover {
+  background-color: #45a049;
+} */
+
+
+/* button#bottom-copy-button {
+  padding: 5px 10px;
+  background-color: #04AA6D;
+   color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+} */
+
+button#bottom-copy-button {
+  position: fixed;
+  width: 50px;
+  top: 90px;
+  right: 30px;
+  padding: 5px 10px;
+  background-color: #04AA6D;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+button#bottom-copy-button:hover {
+  background-color: #45a049;
+}
