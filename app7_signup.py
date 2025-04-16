@@ -518,4 +518,6 @@ def process():
 if __name__ == '__main__':
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)  # Eğer 'uploads' klasörü yoksa oluştur
-    app.run(debug=True)
+    # app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))  # Render sana özel bir PORT verir
+    app.run(host="0.0.0.0", port=port)
