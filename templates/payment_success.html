@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ödeme Başarılı</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.8), rgba(0, 242, 254, 0.8), rgba(0, 123, 255, 1));
+            background-size: 400% 400%;
+            animation: gradient-animation 8s ease infinite;            
+        }
+
+        /* gradient animasyonu */
+        @keyframes gradient-animation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 450px;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 20px;
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background-color: #04AA6D;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>    
+
+    <div class="container">
+        <!-- <h2>Ödeme Başarılı 🎉</h2> -->
+        <h2>Ödeme Başarılı</h2>
+        <p>Teşekkürler <b>{{ full_name }}</b>!</p>
+        <p><b>{{ days }}</b> günlük paketiniz başarıyla satın alındı.</p>
+        <p>Ödenen Tutar: <b>{{ price }} TL</b></p>        
+
+        <!-- Giriş Sayfasına Git Butonu -->
+        <a href="{{ url_for('login') }}" class="button">Kullanıcı Giriş Sayfasına Git</a>
+    </div>
+
+</body>
+</html>

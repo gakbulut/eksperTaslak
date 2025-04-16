@@ -1,71 +1,221 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font Awesome Kütüphanesi -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <title>Giriş Ekranı</title>
     <style>
+        /* Giriş Ekranı Arka Planı */
         body {
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient( #b0b0b0, #e0e0e0); 
             margin: 0;
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.8), rgba(0, 242, 254, 0.8), rgba(0, 123, 255, 1));
+            background-size: 400% 400%;
+            animation: gradient-animation 8s ease infinite;
         }
+
+        /* gradient animasyonu */
+        @keyframes gradient-animation {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Giriş Formu Konteyneri */
         .login-container {
             background: white;
-            padding: 30px;
+            padding: 40px;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            /* Gölgelendirmeyi arttırdık */
             text-align: center;
-            width: 300px;
+            width: 400px;
+            /* Genişliği arttırdık */
         }
+
+        /* Başlık */
         h2 {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             color: #333;
+            font-size: 26px;
+            /* Başlık fontunu büyüttük */
         }
+
+        /* Input Alanları */
         input {
             display: block;
-            width: calc(100% - 20px);
-            margin: 10px auto;
-            padding: 10px;
+            width: 100%;
+            padding: 15px;
+            /* Paddingi eşitledik */
+            margin: 15px auto;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
+            box-sizing: border-box;
+            /* Padding ve border'ı genişlik hesaplamasına dahil eder */
         }
+
+        /* Giriş Butonu */
         button {
             width: 100%;
-            padding: 10px;
+            padding: 15px;
             background: #04AA6D;
             color: white;
             border: none;
             border-radius: 5px;
             font-size: 16px;
+            /* Buton fontunu büyüttük */
             cursor: pointer;
             transition: background 0.3s;
         }
+
         button:hover {
             background: #45a049;
         }
+
+        /* Hata Mesajı */
         .error {
+            margin-top: 15px;
             color: red;
-            display: {{ 'block' if error else 'none' }};
+            display: {{ 'block' if error else 'none' }}
+        }
+
+        /* Ödeme Butonu */
+        .purchase-button {
+            display: inline-block;
+            background: #ff4b5c;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
             margin-top: 10px;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .purchase-button:hover {
+            background: #d13a4b;
+            box-shadow: 0 0 10px rgba(255, 75, 92, 0.5);
+        }
+
+
+        /* Şifreyi Gösterme İkonu */
+        .password-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-container input {
+            width: 100%;
+            padding-right: 50px;
+            /* Göz ikonu için alan açtık */
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+            font-size: 24px;
+            /* İkon boyutunu büyüttük */
+            color: #555;
+            transition: color 0.3s;
+        }
+
+        .toggle-password:hover {
+            color: #000;
+        }
+
+
+
+        /* Hesabınız yok mu? Yazısı */
+        .account-question {
+            font-size: 18px;
+            /* Yazı boyutunu büyüttük */
+            color: #333;
+            /* Yazı rengini koyu gri yaptık */
+            margin-top: 20px;
+            /* Üstten biraz boşluk ekledik */
+        }
+
+        /* Kayıt Ol Linki */
+        .register-link {
+            color: #007bff;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .register-link:hover {
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
         }
     </style>
 </head>
+
 <body>
     <div class="login-container">
         <h2>Kullanıcı Giriş Ekranı</h2>
         <form method="POST">
             <input type="text" name="username" id="username" placeholder="Kullanıcı Adı" required>
-            <input type="password" name="password" id="password" placeholder="Şifre" required>
+            <div class="password-container">
+                <input type="password" id="password" name="password" placeholder="Şifre" required>
+                <i class="fa-solid fa-eye toggle-password" onclick="togglePassword()"></i>
+            </div>
             <button type="submit">Giriş</button>
         </form>
+        {% if error %}
         <p class="error">{{ error }}</p>
-        <p>Hesabınız yok mu? <a href="/signup">Kayıt Ol</a></p>
+        {% endif %}
+
+        {% if expired %}
+        <!-- <p class="error">Kullanım süreniz dolmuştur. Lütfen ödeme yaparak devam edin.</p> -->
+        <a href="/purchase" class="purchase-button">Paket Seçiniz</a>
+        {% else %}
+        <p class="account-question">Hesabınız yok mu?
+            <a href="/user_info" class="register-link">Kayıt Ol</a>
+        </p>
+        {% endif %}
+        
+
     </div>
+
+    <script>
+        function togglePassword() {
+            let passwordField = document.getElementById("password");
+            let toggleIcon = document.querySelector(".toggle-password");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleIcon.classList.remove("fa-eye");
+                toggleIcon.classList.add("fa-eye-slash");  // Açıkken göz kapalı ikonu
+            } else {
+                passwordField.type = "password";
+                toggleIcon.classList.remove("fa-eye-slash");
+                toggleIcon.classList.add("fa-eye");  // Kapalıyken göz açık ikonu
+            }
+        }
+
+    </script>
 </body>
+
 </html>

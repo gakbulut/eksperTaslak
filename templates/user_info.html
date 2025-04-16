@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>Kullanıcı Bilgileri</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.8), rgba(0, 242, 254, 0.8), rgba(0, 123, 255, 1));
+            background-size: 400% 400%;
+            animation: gradient-animation 8s ease infinite;
+        }
+
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 450px;
+        }
+        h2 { color: #333; margin-bottom: 20px; }
+        label { font-weight: bold; display: block; margin: 10px 0 5px; }
+        input {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        button:hover { background: #218838; transform: scale(1.05); }
+
+        .password-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .password-container input { width: 100%; padding-right: 40px; }
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            color: #555;
+            transition: color 0.3s;
+        }
+        .toggle-password:hover { color: #000; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 style="margin-top:20px;">Kullanıcı Bilgilerini Oluşturun</h2>
+        <form id="userForm">
+            <label for="full_name">Ad Soyad:</label>
+            <input type="text" id="full_name" name="full_name" required>
+
+            <label for="email">E-Posta:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="username">Kullanıcı Adı:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Şifre:</label>
+            <div class="password-container">
+                <input type="password" id="password" name="password" required>
+                <i class="fa-solid fa-eye toggle-password" onclick="togglePassword()"></i>
+            </div>
+
+            <button type="submit">Onayla</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("userForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Sayfanın yenilenmesini engelle
+    
+            // Input alanlarındaki gereksiz boşlukları temizle
+            document.querySelectorAll("#userForm input").forEach(input => {
+                input.value = input.value.trim();
+            });
+    
+            let formData = new FormData(this);
+    
+            fetch("/save_user_info", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    window.location.href = "/purchase"; // ✅ Modal olmadan direkt yönlendir
+                } else {
+                    alert("Hata: " + data.message);
+                }
+            })
+            .catch(error => console.error("Hata:", error));
+        });
+    
+        // Kullanıcı yazarken gereksiz boşlukları ve hatalı girişleri engelle
+        document.querySelectorAll("#userForm input").forEach(input => {
+            input.addEventListener("input", function() {
+                this.value = this.value.replace(/\s+/g, " "); // Birden fazla boşluğu tek boşluğa indir
+            });
+        });
+    
+        function togglePassword() {
+            let passwordField = document.getElementById("password");
+            let toggleIcon = document.querySelector(".toggle-password");
+    
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleIcon.classList.remove("fa-eye");
+                toggleIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                toggleIcon.classList.remove("fa-eye-slash");
+                toggleIcon.classList.add("fa-eye");
+            }
+        }
+    </script>
+    
+</body>
+</html>

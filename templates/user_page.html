@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kullanıcı Sayfası</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>{{ full_name }}!</h1>
+        
+        <div class="mt-4">
+            <h4>Kullanıcı Bilgileriniz</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Bilgi</th>
+                        <th scope="col">Değer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Kullanıcı Adı</td>
+                        <td>{{ username }}</td>
+                    </tr>
+                    <tr>
+                        <td>Şifre</td>
+                        <td>{{ password }}</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>{{ email }}</td>
+                    </tr>
+                    <tr>
+                        <td>Kayıt Tarihi</td>
+                        <td>{{ register_date }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-4">
+            <h4>Satın Aldığınız Paketler</h4>
+        
+            {% if payment_history %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Paket Adı</th>
+                        <th scope="col">Ödeme Tutarı</th>
+                        <th scope="col">Ödeme Tarihi</th>
+                        <th scope="col">Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payment_history %}
+                    <tr>
+                        <td>{{ payment.package_name }}</td>
+                        <td>{{ payment.payment_amount }}</td>
+                        <td>{{ payment.payment_date }}</td>
+                        <td>{{ payment.durum }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p>Satın alınmış herhangi bir paket bulunamadı.</p>
+            {% endif %}
+        </div>
+        
+        <!-- <div class="mt-4">
+            <a href="{{ url_for('login') }}" class="btn btn-danger">Çıkış Yap</a>
+        </div> -->
+        <div class="mt-4">
+            <a href="javascript:void(0);" class="btn btn-danger logout-button2"
+               onclick="logoutUser(this)" data-username="{{ username }}">
+              Çıkış Yap
+            </a>
+          </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function logoutUser(element) {
+          const username = element.getAttribute('data-username');
+          
+          fetch('/logout', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "username": username })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === "success") {
+              window.location.href = "/";  // Ana sayfaya yönlendir
+            } else {
+              alert("Çıkış yapılamadı: " + data.message);
+            }
+          })
+          .catch(error => {
+            console.error("Logout sırasında hata:", error);
+            alert("Beklenmeyen bir hata oluştu.");
+          });
+        }
+      </script>
+      
+</body>
+</html>

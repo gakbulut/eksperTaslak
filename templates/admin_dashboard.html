@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="10">  <!-- Sayfayı her 10 saniyede bir otomatik yeniler -->
+
+    <!-- Bootstrap CSS ekleyin (Eğer zaten ekli değilse) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap JS ve Popper.js ekleyin -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <title>Admin Dashboard</title>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> -->
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        header nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        header nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th,
+        table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #888;
+        }
+
+        /* Zaman başlığındaki alt çizgiyi kaldır ve koyu siyah yap */
+        .dropdown-toggle {
+            border: none;
+            /* Alt çizgiyi kaldır */
+            color: #000;
+            /* Yazıyı koyu siyah yap */
+            font-weight: bold;
+            /* Yazıyı koyu yapmak için */
+            text-decoration: none;
+        }
+
+        /* İsterseniz hover etkisi de ekleyebilirsiniz */
+        .dropdown-toggle:hover {
+            color: #000;
+            /* Hoverda da koyu siyah */
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Yönetici Paneli</h1>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('login') }}">Çıkış Yap</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section class="statistics">
+            <h2>İstatistikler</h2>
+            <p><strong>Toplam Kullanıcı Sayısı:</strong> {{ total_users }}</p>
+            <p><strong>Aktif Kullanıcı Sayısı:</strong> {{ active_users }}</p>
+            <p><strong>Günlük Kullanıcı Sayısı:</strong> {{ daily_users }}</p>
+
+        </section>
+
+        <section>
+            <h2>Son 30 Gündeki Kullanıcı Girişleri (Günlük)</h2>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+                            <div class="dropdown">
+                                <button class="btn btn-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Gün Seç
+                                </button>
+                                <ul class="dropdown-menu p-2" id="day-dropdown" data-bs-auto-close="outside">
+                                    <!-- Tümünü Seç -->
+                                    <li class="dropdown-item">
+                                        <input type="checkbox" id="select-all" class="select-all">
+                                        <label for="select-all">Tümünü Seç</label>
+                                    </li>
+                                    <li class="dropdown-divider"></li>
+            
+                                    {% for day in all_days %}
+                                    <li class="dropdown-item d-flex align-items-center">
+                                        <input type="checkbox" class="day-checkbox me-2" value="{{ day }}" {% if day in selected_days %}checked{% endif %}>
+                                        <label>{{ day }}</label>
+                                    </li>
+                                    {% endfor %}
+                                    
+                                    <li class="dropdown-divider"></li>
+                                    <li class="text-center">
+                                        <button class="btn btn-sm btn-primary" id="apply-filter">Tamam</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </th>
+                        <th>Kullanıcı Sayısı</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in daily_counts %}
+                    <tr>
+                        <td>{{ entry.day }}</td>
+                        <td>{{ entry.user_count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <form id="filter-form" method="POST">
+                <input type="hidden" name="selected_days" id="selected-days">
+            </form>    
+
+        </section>
+
+        <section class="user-sessions">
+            <h2>Kullanıcı Oturum Bilgileri</h2>
+            {% if user_sessions %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kullanıcı Adı</th>
+                        <th>Oturumda Geçirilen Süre (Dakika)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user, minutes in user_sessions.items() %}
+                    <tr>
+                        <td>{{ user }}</td>
+                        <td>{{ minutes|round(2) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>Aktif oturum bilgisi bulunmamaktadır.</p>
+            {% endif %}
+        </section>
+
+        <footer>
+            <p>&copy; 2025 Admin Paneli</p>
+        </footer>
+    </div>
+
+
+
+    <!-- <script>
+        document.querySelectorAll('.minute-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                let selectedMinutes = [];
+                document.querySelectorAll('.minute-checkbox:checked').forEach(cb => {
+                    selectedMinutes.push(cb.value);
+                });
+        
+                // Seçilen dakikaları POST ile gönder
+                fetch('/admin_dashboard', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ selected_minutes: selectedMinutes })
+                }).then(() => location.reload());  // Sayfayı yenile
+            });
+        });
+        </script> -->
+
+    <!-- <script>
+        document.getElementById("apply-filter").addEventListener("click", function (event) {
+            event.preventDefault(); // 📌 Formun anında gönderilmesini engelle
+
+            let selected = [];
+            document.querySelectorAll(".minute-checkbox:checked").forEach((checked) => {
+                selected.push(checked.value);
+            });
+
+            document.getElementById("selected-minutes").value = selected.join(",");
+
+            // ✅ Formu manuel olarak gönder
+            document.getElementById("filter-form").submit();
+        });
+    </script> -->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const selectAllCheckbox = document.getElementById("select-all");
+            const dayCheckboxes = document.querySelectorAll(".day-checkbox");
+        
+            // "Tümünü Seç" checkbox'ı
+            selectAllCheckbox.addEventListener("change", function() {
+                dayCheckboxes.forEach(checkbox => {
+                    checkbox.checked = selectAllCheckbox.checked;
+                });
+            });
+        
+            // "Tamam" butonu
+            document.getElementById("apply-filter").addEventListener("click", function(event) {
+                event.preventDefault();
+        
+                let selected = [];
+                document.querySelectorAll(".day-checkbox:checked").forEach(checked => {
+                    selected.push(checked.value);
+                });
+        
+                document.getElementById("selected-days").value = selected.join(",");
+                document.getElementById("filter-form").submit();
+            });
+        });
+        
+    </script>
+
+</body>
+
+</html>

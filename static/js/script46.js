@@ -1,4 +1,4 @@
-// script18.js dosyası
+// script.js dosyası
 
 /* left column - stacked menu*/
 function openCity_left(evt, cityName) {
@@ -3814,6 +3814,8 @@ function bbbolumleriEdit(id) {
   const bbbolumleri_2 = ["banyo/wc", "banyo", "wc", "lavabo", "ebeveyn banyo", "duş", "balkon", "kapalı balkon", "depo", "vestiyer", "teras"];
 
   const container = document.getElementById(id);
+  const checkedItems = ["hol", "mutfak", "salon", "oda", "banyo/wc", "balkon"];
+
 
   function createCheckboxGroup(bbbolumleri) {
     const wrapperDiv = document.createElement("div");
@@ -3828,7 +3830,10 @@ function bbbolumleriEdit(id) {
       checkbox.value = bolum;
       checkbox.id = bolum;
       checkbox.name = id;
-      if (index === 0) checkbox.checked = true;
+      // if (index === 0) checkbox.checked = true;
+      if (checkedItems.includes(bolum)) {
+        checkbox.checked = true;
+      }
 
       const span = document.createElement("span");
       span.className = "checkmark";
@@ -3948,6 +3953,79 @@ function koordinatlar() {
   
   return [enlemZiraat, boylamZiraat, enlemVakif, boylamVakif];
 };
+
+
+// Avatar Dropdown Menü Fonksiyonu
+function toggleDropdownAvatar() {
+  const menu = document.getElementById("avatar-dropdownMenu"); 
+  menu.classList.toggle("show");
+}
+
+// Example: Add event listener to toggle dropdown on clicking avatar
+document.querySelector('.avatar-container').addEventListener('click', toggleDropdown);
+
+// Çıkış yapma fonksiyonu
+function logoutUser(element) {
+  const username = element.getAttribute('data-username');  // HTML'den kullanıcı adı alınır
+
+  fetch('/logout', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ "username": username })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === "success") {
+      window.location.href = "/";  // Başarılıysa login sayfasına yönlendir
+    } else {
+      alert("Çıkış yapılamadı: " + data.message);
+    }
+  })
+  .catch(error => {
+    console.error("Logout sırasında hata:", error);
+    alert("Beklenmeyen bir hata oluştu.");
+  });
+}
+
+// Sayfa kapanmadan önce logout işlemi
+window.addEventListener('beforeunload', function () {
+  const logoutButton = document.querySelector('.logout-button');  // Çıkış butonunu seç
+  const username = logoutButton ? logoutButton.getAttribute('data-username') : '';  // Butondan kullanıcı adını al
+
+  if (username) {
+    const data = JSON.stringify({ "username": username });
+    navigator.sendBeacon('/logout', data);  // Beacon ile logout isteği gönder
+  }
+});
+
+// Kullanıcı sayfası butonu giriş işlemi
+function goToUserPage() {
+  const logoutBtn = document.querySelector('.logout-button2');
+  const username = logoutBtn?.getAttribute('data-username');
+
+  if (!username) {
+      alert("Kullanıcı bilgisi bulunamadı.");
+      return;
+  }
+
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = '/user_page';
+
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'username';
+  input.value = username;
+
+  form.appendChild(input);
+  document.body.appendChild(form);
+  form.submit();
+}
+
+
+
 
 
 /* ************************************************************************************************ */
@@ -4239,10 +4317,16 @@ document.getElementById('AnalizEt').addEventListener('click', () => {
     });
 });
 
-// Tarayıcı Kapatma Algılama
-window.addEventListener("beforeunload", function (event) {
-  navigator.sendBeacon("/close_session");
-});
+
+
+
+
+
+
+
+
+
+
 
 
 // background: linear-gradient(to right, #4facfe, #00f2fe); 

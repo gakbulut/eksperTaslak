@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paket Seçimi</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            /* background: linear-gradient(to right, #4facfe, #00f2fe); */
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.8), rgba(0, 242, 254, 0.8), rgba(0, 123, 255, 1));
+            background-size: 400% 400%;
+            animation: gradient-animation 8s ease infinite;
+
+        }
+
+        /* gradient animasyonu */
+        @keyframes gradient-animation {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 450px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .package {
+            margin: 10px;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 18px;
+            font-weight: bold;
+            border: 2px solid transparent;
+        }
+
+        .package:hover {
+            transform: scale(1.05);
+            border: 2px solid #007bff;
+        }
+
+        .package.selected {
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        .disabled {
+            background-color: #ddd;
+            color: #999;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Bir Paket Seçin</h2>
+
+        {% if expired %}
+        <div class="alert">
+            <p style="color: red; font-weight: bold;">Ücretsiz deneme süreniz dolmuştur. Lütfen ücretli bir paket seçin.
+            </p>
+        </div>
+        {% endif %}
+
+        <form id="purchaseForm" action="{{ url_for('process_purchase') }}" method="POST">
+            <input type="hidden" name="days_valid" id="daysValidInput">
+            <input type="hidden" name="price" id="priceInput">            
+        </form>
+
+        <div class="package {% if expired %}disabled{% endif %}" {% if not expired %}
+            onclick="redirectToPayment(15, 0)" {% endif %}>
+            15 Günlük Deneme Paketi - Ücretsiz
+        </div>
+
+        <div class="package" onclick="redirectToPayment(30, 10)">30 Günlük Paket - 10 TL</div>
+        <div class="package" onclick="redirectToPayment(90, 30)">90 Günlük Paket - 30 TL</div>
+        <div class="package" onclick="redirectToPayment(180, 60)">180 Günlük Paket - 60 TL</div>
+        <div class="package" onclick="redirectToPayment(360, 120)">360 Günlük Paket - 120 TL</div>
+    </div>
+
+
+
+    <!-- <script>
+        function redirectToPayment(days, price) {
+            window.location.href = `/payment?days=${days}&price=${price}`;
+        }           
+    </script> -->
+
+    <script>
+        function redirectToPayment(days, price) {
+            if (days === 15 && price === 0) {
+                fetch('/process_purchase', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `days_valid=${days}&price=${price}`
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === "success") {
+                            window.location.href = data.redirect;
+                        } else {
+                            alert("Bir hata oluştu: " + data.message);
+                        }
+                    })
+                    .catch(error => console.error("Hata:", error));
+            } else {
+                window.location.href = `/payment?days=${days}&price=${price}`;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let trialExpired = "{{ expired }}" === "True";
+            if (trialExpired) {
+                let freeTrialPackage = document.querySelector(".package.disabled");
+                if (freeTrialPackage) {
+                    freeTrialPackage.removeAttribute("onclick");
+                }
+            }
+        });
+
+        function submitPurchaseForm(days, price) {
+            document.getElementById("daysValidInput").value = days;
+            document.getElementById("priceInput").value = price;
+            document.getElementById("purchaseForm").submit();
+        }
+    </script>
+
+
+</body>
+
+</html>
