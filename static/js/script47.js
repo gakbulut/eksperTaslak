@@ -3989,16 +3989,242 @@ function logoutUser(element) {
   });
 }
 
-// Sayfa kapanmadan önce logout işlemi
-window.addEventListener('beforeunload', function () {
-  const logoutButton = document.querySelector('.logout-button');  // Çıkış butonunu seç
-  const username = logoutButton ? logoutButton.getAttribute('data-username') : '';  // Butondan kullanıcı adını al
+// // Sayfa kapanmadan önce logout işlemi
+// window.addEventListener('beforeunload', function () {
+//   const logoutButton = document.querySelector('.logout-button');  // Çıkış butonunu seç
+//   const username = logoutButton ? logoutButton.getAttribute('data-username') : '';  // Butondan kullanıcı adını al
 
-  if (username) {
-    const data = JSON.stringify({ "username": username });
-    navigator.sendBeacon('/logout', data);  // Beacon ile logout isteği gönder
+//   if (username) {
+//     const data = JSON.stringify({ "username": username });
+//     navigator.sendBeacon('/logout', data);  // Beacon ile logout isteği gönder
+//   }
+// });
+
+
+
+// // Sayfa kapanmadan önce logout işlemi (sendBeacon ile)
+// window.addEventListener('beforeunload', function () {
+//   let username = null;
+
+//   // Önce sessionStorage kontrol edelim
+//   if (sessionStorage.getItem("username")) {
+//     username = sessionStorage.getItem("username");
+//   } else {
+//     // Eğer orada yoksa, sayfadaki logout butonundan almayı dene
+//     const logoutButton = document.querySelector('.logout-button, .logout-button2');
+//     username = logoutButton ? logoutButton.getAttribute('data-username') : null;
+//   }
+
+//   // Kullanıcı adı varsa logout işlemi yap
+//   if (username) {
+//     const data = JSON.stringify({ "username": username });
+//     navigator.sendBeacon('/logout', data);
+//   }
+// });
+
+// // Sayfa kapanmadan önce logout işlemi (sendBeacon ile)
+// document.addEventListener('visibilitychange', function () {
+//   if (document.visibilityState === 'hidden') {
+//     let username = sessionStorage.getItem("username");
+
+//     if (!username) {
+//       const logoutButton = document.querySelector('.logout-button, .logout-button2');
+//       username = logoutButton ? logoutButton.getAttribute('data-username') : null;
+//     }
+
+//     if (username) {
+//       const data = JSON.stringify({ "username": username });
+//       navigator.sendBeacon('/tab_closed', data);
+//     }
+//   }
+// });
+
+// window.addEventListener('pagehide', function (event) {
+//   if (event.persisted) return; // Sayfa bfcache'e alındıysa (geri gelince restore) => logout olmasın
+
+//   let username = sessionStorage.getItem("username");
+
+//   if (!username) {
+//     const logoutButton = document.querySelector('.logout-button, .logout-button2');
+//     username = logoutButton ? logoutButton.getAttribute('data-username') : null;
+//   }
+
+//   if (username) {
+//     const data = JSON.stringify({ "username": username });
+//     navigator.sendBeacon('/tab_closed', data); // Tab kapandığında server'a bildirim gönder
+//   }
+// });
+
+// window.addEventListener("pagehide", function () {
+//   const [navEntry] = performance.getEntriesByType("navigation");
+
+//   if (navEntry && navEntry.type === "reload") {
+//     // F5 gibi bir yenileme, logout yapma
+//     return;
+//   }
+
+//   const username = sessionStorage.getItem("username");
+//   if (username) {
+//     navigator.sendBeacon('/logout', JSON.stringify({ username }));
+//   }
+// });
+
+
+let isNavigatingAway = false;
+// Linklere veya butonlara tıklanınca "sayfa geçişi" oluyor, bunu yakala
+window.addEventListener('click', (e) => {
+  const target = e.target.closest('a, button, input[type="submit"]');
+  if (target) {
+    isNavigatingAway = true;
   }
 });
+
+// Sayfa kapandığında veya gizlendiğinde çalışır
+window.addEventListener('pagehide', function () {
+  const navType = performance.getEntriesByType("navigation")[0]?.type;
+
+  // Eğer sayfa F5 ile yenileniyorsa logout yapma
+  if (navType === "reload") {
+    return;
+  }
+
+  // Sayfa başka bir sayfaya gitmiyorsa ve yenileme değilse => logout
+  if (!isNavigatingAway) {
+    let username = sessionStorage.getItem("username") || 
+      (document.querySelector('.logout-button, .logout-button2')?.getAttribute('data-username') ?? null);
+
+    if (username) {
+      const data = JSON.stringify({ "username": username });
+      navigator.sendBeacon('/logout', data);
+    }
+  }
+});
+
+// let isNavigatingAway = false;
+// let username = sessionStorage.getItem("username") || 
+//   (document.querySelector('.logout-button, .logout-button2')?.getAttribute('data-username') ?? null);
+
+// // Sayfa içi link, buton gibi geçişlerde çıkış yapılmasın
+// window.addEventListener('click', (e) => {
+//   const target = e.target.closest('a, button, input[type="submit"]');
+//   if (target) {
+//     isNavigatingAway = true;
+//   }
+// });
+
+// // Sayfa görünürlüğü değişince çalışır (örn. sekme kapanınca)
+// document.addEventListener('visibilitychange', () => {
+//   if (document.visibilityState === 'hidden' && !isNavigatingAway && username) {
+//     const data = JSON.stringify({ username });
+//     navigator.sendBeacon('/logout', data);
+//   }
+// });
+
+// // beforeunload ile ekstra önlem — sadece gerçek sekme kapanışında çalışır
+// window.addEventListener('beforeunload', function (e) {
+//   if (!isNavigatingAway && username) {
+//     const data = JSON.stringify({ username });
+//     navigator.sendBeacon('/logout', data);
+//   }
+// });
+
+
+// let username = sessionStorage.getItem("username") || 
+//   (document.querySelector('.logout-button, .logout-button2')?.getAttribute('data-username') ?? null);
+
+// // Sayfa kapandığında çalışır – ancak sadece tarayıcı sekmesi tamamen kapatıldığında
+// window.addEventListener('pagehide', function (event) {
+//   if (!event.persisted && username) {
+//     // Sayfa yenilenmiyor, gerçekten kapanıyor
+//     const data = JSON.stringify({ username });
+//     navigator.sendBeacon('/logout', data);
+//     console.log("Sekme kapandı, logout gönderildi.");
+//   } else {
+//     console.log("Yenileme tespit edildi, logout yapılmadı.");
+//   }
+// });
+
+
+// let username = sessionStorage.getItem("username") || 
+//   (document.querySelector('.logout-button, .logout-button2')?.getAttribute('data-username') ?? null);
+
+// // Bu flag, sadece sayfa gerçekten kapandığında logout yapılmasını sağlar
+// let shouldLogout = true;
+
+// // Link ya da butonlara tıklanırsa, logout yapılmamalı
+// window.addEventListener('click', (e) => {
+//   const target = e.target.closest('a, button, input[type="submit"]');
+//   if (target) {
+//     shouldLogout = false;
+//   }
+// });
+
+// // Form submit edildiğinde logout yapılmamalı
+// window.addEventListener('submit', () => {
+//   shouldLogout = false;
+// });
+
+// // Sayfa unload olduğunda logout tetiklenebilir
+// window.addEventListener('beforeunload', (e) => {
+//   if (shouldLogout && username) {
+//     const data = JSON.stringify({ username });
+//     navigator.sendBeacon('/logout', data);
+//     console.log("Sekme kapatıldı → logout gönderildi.");
+//   } else {
+//     console.log("Yönlendirme/yenileme → logout yapılmadı.");
+//   }
+// });
+
+
+
+// let shouldLogout = true;
+
+// // Sayfa içi linkler, butonlar veya form gönderileri → logout yapılmasın
+// document.querySelectorAll('a, button, form').forEach(el => {
+//   el.addEventListener('click', () => {
+//     console.log("Sayfa içi geçiş tespit edildi, logout yapılmayacak.");
+//     shouldLogout = false;
+//   });
+// });
+
+// // Sayfa değişikliği veya sekme kapanışı durumlarını kontrol etmek için visibilitychange olayını sadece "sekme kapanışı" için ayarlıyoruz
+// document.addEventListener('visibilitychange', () => {
+//   if (document.visibilityState === 'hidden' && shouldLogout) {
+//     const username = sessionStorage.getItem("username") || 
+//       (document.querySelector('.logout-button, .logout-button2')?.getAttribute('data-username') ?? null);
+    
+//     console.log("visibilitychange tetiklendi. Username:", username, "ShouldLogout:", shouldLogout);
+
+//     if (username) {
+//       const data = JSON.stringify({ username });
+//       navigator.sendBeacon('/logout', data);
+//     }
+//   }
+// });
+
+// // Sayfa kapanmadan önce (beforeunload) tetiklenecek işlem
+// window.addEventListener('beforeunload', function () {
+//   const username = sessionStorage.getItem("username") || 
+//     (document.querySelector('.logout-button, .logout-button2')?.getAttribute('data-username') ?? null);
+
+//   console.log("beforeunload çalıştı. Username:", username, "ShouldLogout:", shouldLogout);
+
+//   if (shouldLogout && username) {
+//     const data = JSON.stringify({ username });
+//     navigator.sendBeacon('/logout', data);
+//     console.log("Sekme kapatıldı, logout tetiklendi");
+//   } else {
+//     console.log("Yönlendirme veya sayfa içi geçiş → logout yapılmadı");
+//   }
+// });
+
+
+
+
+
+
+
+
 
 // Kullanıcı sayfası butonu giriş işlemi
 function goToUserPage() {
@@ -4316,7 +4542,6 @@ document.getElementById('AnalizEt').addEventListener('click', () => {
       console.error('Error:', error);
     });
 });
-
 
 
 

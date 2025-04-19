@@ -1,5 +1,4 @@
 from flask import Flask, jsonify, render_template, request, redirect, url_for, session # type: ignore
-# from flask_session import Session
 from collections import deque
 import os
 import time
@@ -16,9 +15,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 from lxml import html as lxml_html
+import json
+import inspect
 
 app = Flask(__name__)
 app.secret_key = "korpusluteum"  # Güvenlik için gereklidir
+app.permanent_session_lifetime = timedelta(days=1)  # 1 gün boyunca oturum geçerli olsun
 # app.config['SESSION_PERMANENT'] = False
 # app.config['SESSION_COOKIE_DURATION'] = timedelta(seconds=1)  # 1 saniye sonra oturumu sil
 # app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)  # 1 gün boyunca oturum geçerli
@@ -28,6 +30,11 @@ app.secret_key = "korpusluteum"  # Güvenlik için gereklidir
 EXCEL_FILE = "users.xlsx"
 LOG_FILE = "logins.xlsx"
 PAY_FILE = "payments.xlsx"
+
+def debug_print(*args, **kwargs):
+    frame = inspect.currentframe().f_back
+    lineno = frame.f_lineno
+    print(f"[Satır {lineno}]", *args, **kwargs)
 
 # Kullanıcı bilgilerini Excel'den yükleme fonksiyonu
 def load_users_from_excel():
@@ -101,8 +108,10 @@ active_sessions = {}
 
 @app.route('/', methods=['GET', 'POST'])
 def login(): 
-    print("login///active_sessions", active_sessions)   
-    session.clear()  #  Önceki oturumu temizle
+    debug_print("************************************************************************************************************************************************") 
+    debug_print("active_sessions/login():", active_sessions)  
+    debug_print("session/login():", session)   
+    # session.clear()  #  Önceki oturumu temizle
     expired = False             
       
     users, unlimited_users, user_data = load_users_from_excel() # Excel’den güncel olarak al       
@@ -115,9 +124,10 @@ def login():
         username = str(request.form.get('username')).strip()
         password = str(request.form.get('password')).strip() 
         
-        print("users:", users)  
-        print("unlimited_users:", unlimited_users) 
-        print("session.clear():", session) 
+        debug_print("users:", users) 
+        # debug_print("unlimited_users:", unlimited_users)        
+        # debug_print("user_data:::login", user_data)       
+        # print(json.dumps(user_data, indent=2, ensure_ascii=False))  
         
         # Admin kontrolü
         # Eğer kullanıcı admin ise, giriş yapmasına izin ver ve tüm kullanıcılara izin ver
@@ -135,7 +145,7 @@ def login():
         # Kullanıcı giriş yaptığında log kaydet
         log_login(username)
         
-        print("user_data[username]:", user_data[username]) 
+        debug_print("user_data[username]:", user_data[username]) 
         
         # Excel'den alınan kullanıcı verileri   
         # user_info = user_data.get(username, {})
@@ -144,7 +154,7 @@ def login():
         # remaining_days = user_info.get("remaining_days")
         # password = user_info.get("password")       
         # print("fullname_login:::", full_name) 
-        user_info = user_data.get(username, {})
+        user_info = user_data.get(username, {})        
         full_name = user_info.get("full_name")
         remaining_days = user_info.get("remaining_days") 
        
@@ -157,12 +167,17 @@ def login():
             session['expired'] = True  # expired durumunu da session'a kaydedelim
             session['user_data'] = user_data # Tüm kullanıcı verileri (dict olarak)
             session['users'] = users # Şifreleri tutan dict   
-            print("session_remaining_days <= 0:", session)
+            debug_print("session_remaining_days <= 0:", session)
             return render_template('login.html', error="Kullanım süreniz dolmuştur!", expired=expired)
        
         # Eğer kullanıcı sınırsız giriş hakkına sahip değilse tek oturum izni ver
         if username not in unlimited_users and username in active_sessions:           
             return render_template('login.html', error="Bu kullanıcı zaten giriş yaptı!", expired=False)
+        
+        # **ÖNEMLİ**: Yeni giriş yapan kullanıcının önceki verilerini temizle
+        for key in list(session.keys()):
+            if key.startswith('username_'):
+                session.pop(key)
 
         # Kullanıcı oturumu oluştur
         session.permanent = True
@@ -175,24 +190,24 @@ def login():
         # Aktif oturum bilgilerini güncelle
         if username not in unlimited_users:
             active_sessions[username] = {
-                "last_activity": datetime.now(),
-                "login_time": datetime.now(),
-                "full_name": user_info.get('full_name'),
+                # "last_activity": datetime.now(),
+                # "login_time": datetime.now(),
+                # "full_name": user_info.get('full_name'),
                 "name": user_info.get('name'),
-                "surname": user_info.get('surname'),
-                "email": user_info.get('email'),
-                "ip_address": user_info.get('user_ip'),
-                "register_date": user_info.get('register_date'),
-                "days_valid": user_info.get('days_valid'),
-                "price": user_info.get('price'),
-                "payment_date": user_info.get('payment_date'),
+                # "surname": user_info.get('surname'),
+                # "email": user_info.get('email'),
+                # "ip_address": user_info.get('user_ip'),
+                # "register_date": user_info.get('register_date'),
+                # "days_valid": user_info.get('days_valid'),
+                # "price": user_info.get('price'),
+                # "payment_date": user_info.get('payment_date'),
                 "remaining_days": user_info.get('remaining_days')
             }
                        
           
-        print("login:::active_sessions:", active_sessions)
-        print("login:::username:", username)  
-        print("session_login:", session)               
+        debug_print("login:::active_sessions:", active_sessions)
+        debug_print("login:::username:", username)  
+        debug_print("session_login:", session)               
 
         return redirect(url_for('taslak'))  # Giriş başarılıysa yönlendir
     
@@ -297,12 +312,7 @@ def update_last_activity():
         # else:
         #     # Admin paneline giren kullanıcının da oturum açmasını sağla
         #     active_sessions[username] = {"last_activity": datetime.now()}
-        
-# @app.before_request
-# def make_session_non_permanent():
-#     session.permanent = False  # Oturum tarayıcı kapanınca silinsin
-#     # session.modified = True  # Her istek geldiğinde session güncellenir
-    
+       
 @app.route('/taslak')
 def taslak():    
     # Session içinden kullanıcıyı bul
@@ -315,28 +325,37 @@ def taslak():
     if not username:
         return redirect(url_for('login'))
     
+    # user_data = session.get('user_data', {})
+    # name = active_sessions.get(username, {}).get("name")
+    # remaining_days = active_sessions.get(username, {}).get("remaining_days")
+    
+    # Session'dan gerekli verileri al
     user_data = session.get('user_data', {})
-    name = active_sessions.get(username, {}).get("name")
-    remaining_days = active_sessions.get(username, {}).get("remaining_days")
+    users = session.get('users', {})
+    active_info = active_sessions.get(username, {})
+
+    name = active_info.get("name", "")
+    remaining_days = active_info.get("remaining_days")
 
     if username in unlimited_users:
         remaining_days = "Sınırsız"
 
-    return render_template('index_flask_46.html', username=username, name=name, remaining_days=remaining_days)
+    return render_template('index_flask_47.html', username=username, name=name, remaining_days=remaining_days)
     
 @app.route('/logout', methods=['POST'])
 def logout():
     data = request.get_json(force=True)
     username = data.get("username") if data else None  
-    print(f"Gelen logout verisi: {data}")
-    print("logout()///username:", username)
+    debug_print(f"Gelen logout verisi: {data}")
+    debug_print("logout()///username:", username)
     
     if not username:
         return jsonify({"status": "error", "message": "Username alınamadı."}), 400
 
     # Aktif oturumlardan kaldır
-    if username and username in active_sessions:
-        del active_sessions[username]
+    if username in active_sessions:
+        del active_sessions[username]       
+   
 
     # Kullanıcıya ait oturumu session'dan temizle
     # for key in list(session.keys()):
@@ -344,10 +363,16 @@ def logout():
     #         session.pop(key)  # 'username_6' gibi olanı sil
     #         break
     
-    # Kullanıcıya ait oturumu session'dan temizle
+    # Session'dan yalnızca o kullanıcıya ait verileri temizle
     session.pop(f'username_{username}', None)
+    
+    # Kullanıcıya ait verileri session'dan temizle
     if 'user_data' in session and username in session['user_data']:
-        session['user_data'].pop(username)       
+        session['user_data'].pop(username, None) 
+    
+    # Diğer session verilerini temizle
+    session.pop('user_data', None)
+    session.pop('users', None)
         
     # Logout log kaydı
     log_logout(username)
@@ -358,35 +383,25 @@ def logout():
     # return jsonify({"status": "success"})
     return jsonify({"status": "success", "message": "Çıkış başarılı"})
 
-# @app.route('/logout', methods=['POST'])
-# def logout():
-#     data = request.get_json(force=True)
-#     username = data.get("username") if data else None  
-#     print(f"Gelen logout verisi: {data}")
-
-#     if not username:
-#         return jsonify({"status": "error", "message": "Username alınamadı."}), 400
-
-#     # Aktif oturumlardan kaldır
-#     if username in active_sessions:
-#         del active_sessions[username]
-
-#     # Tüm oturumu sil (güvenli yöntem)
-#     session_keys = list(session.keys())
-#     for key in session_keys:
-#         if username in str(session.get(key, '')) or key.startswith("username_"):
-#             session.pop(key, None)
-
-#     # Ekstra temizlik (garanti olsun)
-#     session.pop(f'username_{username}', None)
-#     session.get('user_data', {}).pop(username, None)
-    
-#     # Logout log kaydı
-#     log_logout(username)
-
-#     return jsonify({"status": "success", "message": "Çıkış başarılı."})
-
-  
+@app.route('/tab_closed', methods=['POST'])
+def tab_closed():
+    try:
+        # Tab kapandığında gelen veriyi al
+        data = request.get_data()
+        if data:
+            payload = json.loads(data.decode('utf-8'))
+            username = payload.get("username")
+            if username:
+                # Oturum verilerini temizle
+                session.pop(f'username_{username}', None)
+                # Aktif oturumdan kullanıcıyı çıkar
+                active_sessions.pop(username, None)
+                print(f"Tarayıcı kapatıldı: {username} çıkış yaptı.")
+                return '', 204  # Başarılı dönüş
+    except Exception as e:
+        print("Tab kapandı hatası:", e)
+    return '', 204  # Hata durumunda boş dönüş
+ 
 @app.route('/user_info')
 def user_info():
     return render_template('user_info.html')
@@ -645,7 +660,7 @@ def payment():
 
 @app.route('/process_payment', methods=['POST', 'GET'])
 def process_payment(free_trial=False):
-    print(f"process_payment çağrıldı, free_trial={free_trial}")  # Debug log, free_trial parametresini kontrol et
+    debug_print(f"process_payment çağrıldı, free_trial={free_trial}")  # Debug log, free_trial parametresini kontrol et
     
     # Dinamik username key’ini bul
     username = None
@@ -751,8 +766,8 @@ def process_payment(free_trial=False):
             df = pd.concat([df, new_data], ignore_index=True)
             df.to_excel(EXCEL_FILE, index=False)
             
-            # return jsonify({"status": "success", "redirect": url_for('freetrial_success')})
-            return redirect(url_for('freetrial_success'))
+            return jsonify({"status": "success", "redirect": url_for('freetrial_success')})
+            # return redirect(url_for('freetrial_success'))
 
                      
 
@@ -1165,6 +1180,4 @@ def process():
 if __name__ == '__main__':
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)  # Eğer 'uploads' klasörü yoksa oluştur
-    # app.run(debug=True)
-    port = int(os.environ.get("PORT", 10000))  # Render özel port verir
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True)
